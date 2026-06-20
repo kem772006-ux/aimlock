@@ -5,8 +5,7 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
-    - run: clang++ -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -framework Foundation -framework UIKit -framework IOKit -framework CoreGraphics -mios-version-min=18.0 -o aimlock aimlock_ios_complete.mm
-    - run: codesign -s - --entitlements aimlock.entitlements aimlock
+    - run: clang++ -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -framework Foundation -framework UIKit -framework IOKit -framework CoreGraphics -mios-version-min=12.0 -o aimlock aimlock_ios_complete.mm
     - run: mkdir -p Payload/aimlock.app
     - run: cp aimlock Payload/aimlock.app/
     - run: |
