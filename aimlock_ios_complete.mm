@@ -9,7 +9,6 @@ static uint64_t gGameBase = 0;
 static pid_t gGamePid = 0;
 static BOOL gRunning = YES;
 static CGFloat gSW = 0, gSH = 0, gCX = 0, gCY = 0;
-
 static uint64_t OFF_ENTITY_LIST = 0x1A5E4B0;
 static uint64_t OFF_LOCAL_PLAYER = 0x1A2F8C8;
 static uint64_t OFF_CAMERA = 0x1A2F9D0;
@@ -17,11 +16,9 @@ static uint64_t OFF_TEAM = 0x9C;
 static uint64_t OFF_HEALTH = 0xA8;
 static uint64_t OFF_POSITION = 0x60;
 static uint64_t OFF_TRANSFORM = 0x30;
-
 static float AIM_FOV = 300.0f;
 static float AIM_SMOOTH = 6.0f;
 static int AIM_BONE = 6;
-
 typedef struct { float x, y, z; } Vec3;
 typedef struct { float m[4][4]; } VMatrix;
 
@@ -43,7 +40,6 @@ Vec3 readVec3(uint64_t addr) {
     vm_read_overwrite(gTask, (vm_address_t)addr, s, (vm_address_t)&v, &s);
     return v;
 }
-
 pid_t findGame(void) {
     int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0};
     size_t sz;
@@ -65,7 +61,6 @@ pid_t findGame(void) {
     free(p);
     return r;
 }
-
 uint64_t findModuleBase(NSString *modName) {
     vm_address_t addr = 0;
     vm_size_t size = 0;
@@ -90,12 +85,10 @@ uint64_t findModuleBase(NSString *modName) {
     }
     return 0;
 }
-
 float dist2d(CGPoint a, CGPoint b) {
     float dx = a.x - b.x, dy = a.y - b.y;
     return sqrtf(dx*dx + dy*dy);
 }
-
 CGPoint worldToScreen(Vec3 w, VMatrix m) {
     CGPoint s = {0, 0};
     float ww = m.m[3][0]*w.x + m.m[3][1]*w.y + m.m[3][2]*w.z + m.m[3][3];
@@ -105,7 +98,6 @@ CGPoint worldToScreen(Vec3 w, VMatrix m) {
     s.y = gCY - (gCY * (m.m[1][0]*w.x + m.m[1][1]*w.y + m.m[1][2]*w.z + m.m[1][3]) * iw);
     return s;
 }
-
 VMatrix getViewMatrix(void) {
     VMatrix m = {0};
     uint64_t cam = read64(gGameBase + OFF_CAMERA);
@@ -115,7 +107,6 @@ VMatrix getViewMatrix(void) {
     }
     return m;
 }
-
 Vec3 getBonePos(uint64_t obj, int bone) {
     uint64_t t = read64(obj + OFF_TRANSFORM);
     Vec3 pos = {0};
@@ -134,7 +125,6 @@ Vec3 getBonePos(uint64_t obj, int bone) {
     }
     return pos;
 }
-
 BOOL validPlayer(uint64_t obj) {
     if(!obj) return NO;
     int h = read32(obj + OFF_HEALTH);
@@ -143,7 +133,6 @@ BOOL validPlayer(uint64_t obj) {
     if(t > 100) return NO;
     return YES;
 }
-
 void aimloop(void) {
     while(gRunning) {
         @autoreleasepool {
@@ -168,13 +157,11 @@ void aimloop(void) {
         }
     }
 }
-
 @interface AimController : NSObject
 + (instancetype)shared;
 - (BOOL)setup;
 - (void)start;
 @end
-
 @implementation AimController
 + (instancetype)shared {
     static AimController *i = nil;
@@ -220,7 +207,6 @@ void aimloop(void) {
     NSLog(@"[+] OK");
 }
 @end
-
 int main(int argc, char *argv[]) {
     @autoreleasepool {
         AimController *c = [AimController shared];
