@@ -11,7 +11,7 @@ jobs:
     - run: cp a Payload/a.app/
     - run: echo '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>CFBundleExecutable</key><string>a</string><key>CFBundleIdentifier</key><string>c.i</string><key>CFBundleName</key><string>A</string><key>CFBundleVersion</key><string>1</string><key>CFBundlePackageType</key><string>APPL</string><key>LSRequiresIPhoneOS</key><true/></dict></plist>' > Payload/a.app/Info.plist
     - run: ls -la Payload/a.app/
-    - run: ditto -c -k --keepParent Payload i.ipa
+    - run: zip -r i.ipa Payload
     - run: ls -la i.ipa
     - uses: actions/upload-artifact@v4
       with:
