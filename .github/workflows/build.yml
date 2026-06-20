@@ -1,0 +1,30 @@
+name: Build
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: clang++ -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -framework Foundation -framework UIKit -framework IOKit -framework CoreGraphics -mios-version-min=18.0 -o aimlock aimlock_ios_complete.mm
+    - run: brew install ldid
+    - run: ldid -Saimlock.entitlements aimlock
+    - run: mkdir -p Payload/aimlock.app
+    - run: cp aimlock Payload/aimlock.app/
+    - run: |
+        cat > Payload/aimlock.app/Info.plist << 'EOF'
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0"><dict>
+        <key>CFBundleExecutable</key><string>aimlock</string>
+        <key>CFBundleIdentifier</key><string>com.aimlock.ios</string>
+        <key>CFBundleName</key><string>Aimlock</string>
+        <key>CFBundleVersion</key><string>1.0</string>
+        <key>CFBundlePackageType</key><string>APPL</string>
+        <key>LSRequiresIPhoneOS</key><true/>
+        </dict></plist>
+        EOF
+    - run: zip -r aimlock.ipa Payload/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: aimlock-ipa
+        path: aimlock.ipa
