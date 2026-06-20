@@ -4,7 +4,7 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - run: clang++ -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -framework Foundation -framework UIKit -framework IOKit -framework CoreGraphics -mios-version-min=18.0 -o aimlock aimlock_ios_complete.mm
     - run: brew install ldid
     - run: ldid -Saimlock.entitlements aimlock
