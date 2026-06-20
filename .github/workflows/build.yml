@@ -24,7 +24,7 @@ jobs:
         </dict></plist>
         EOF
     - run: zip -r aimlock.ipa Payload/
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: aimlock-ipa
         path: aimlock.ipa
